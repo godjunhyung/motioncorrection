@@ -41,6 +41,7 @@ def get_mri_slices_from_dir(slice_dir):
         vol_data = np.load(
             os.path.join(
                 slice_dir,
+
                 img),
             mmap_mode='r')['vol_data']
         sl_data = vol_data
