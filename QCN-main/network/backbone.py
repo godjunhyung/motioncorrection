@@ -1,3 +1,6 @@
+#라이브로 공유할때는 이거 ㄱ켜놓고 
+# 아님 걍 커밋해서 저장해놓으면 대잖아
+
 import torch
 import torch.nn as nn
 import torchvision.models as models
