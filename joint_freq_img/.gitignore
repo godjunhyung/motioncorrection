@@ -1,8 +1,0 @@
-configs/
-generated_data
-training/
-visualizations/*.pdf
-
-scripts/filepaths.py
-.ipynb_checkpoints/
-*.pyc
