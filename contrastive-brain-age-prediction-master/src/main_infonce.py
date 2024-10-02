@@ -68,6 +68,8 @@ def parse_arguments():
     parser.add_argument('--sigma', type=float, help='gaussian-rbf kernel sigma / cauchy gamma', default=1)
     parser.add_argument('--n_views', type=int, help='num. of multiviews', default=2)
 
+    parser.add_argument('--biased_features', type=bool, default=False, help='Load biased features if True')
+    
     opts = parser.parse_args()
 
     if opts.batch_size > 256:

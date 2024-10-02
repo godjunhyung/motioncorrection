@@ -155,7 +155,7 @@ class FeatureExtractor(BaseEstimator, TransformerMixin):
             thr = self.MASKS[key]["thr"]
             arr[arr <= thr] = 0
             arr[arr > thr] = 1
-            self.masks[key] = nibabel.Nifti1Image(arr.astype(int), np.eye(4))
+            self.masks[key] = nibabel.Nifti1Image(arr.astype(np.int16), np.eye(4))
 
     def fit(self, X, y):
         return self
