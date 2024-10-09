@@ -55,7 +55,7 @@ def correct_bias_field(input_np):
     input_sitk = sitk.GetImageFromArray(input_np)
     corrector = sitk.N4BiasFieldCorrectionImageFilter()
     mask_sitk = sitk.OtsuThreshold(input_sitk, 0, 1, 200)
-    # corrected_image = corrector.Execute(input_sitk, mask_sitk)
+    corrected_image = corrector.Execute(input_sitk, mask_sitk)
     log_bias_field = corrector.GetLogBiasFieldAsImage(input_sitk)
     corrected_image_full_resolution = input_sitk / sitk.Exp(log_bias_field)
     # corrected_np = sitk.GetArrayFromImage(corrected_image)
