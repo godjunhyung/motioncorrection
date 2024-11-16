@@ -18,5 +18,4 @@ pip install scikit-image
 # Install image quality assessment library (piq)
 pip install piq
 
-# Suppress warnings
-pip install warnings
+pip install tensorflow
