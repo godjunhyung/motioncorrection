@@ -17,5 +17,8 @@ pip install scikit-image
 
 # Install image quality assessment library (piq)
 pip install piq
+pip install pyrtools
+pip install PyWavelets
+pip install opencv-python
 
 pip install tensorflow
