@@ -22,3 +22,10 @@ pip install PyWavelets
 pip install opencv-python
 
 pip install tensorflow
+
+# google API
+pip install google-api-python-client
+pip install oauth2client
+pip install httplib2
+
+

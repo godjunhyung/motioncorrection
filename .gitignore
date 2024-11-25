@@ -2,4 +2,6 @@
 flair_map/
 t2_map/
 t1post_map/
-Data/
+data/
+storage.json
+credentials.json
