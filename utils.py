@@ -1,6 +1,22 @@
-
 import numpy as np
 import SimpleITK as sitk
+import torch
+
+def ifft2c(k):
+    x = torch.fft.fftshift(torch.fft.ifft2(torch.fft.ifftshift(k, (-2,-1)), norm='ortho'), (-2,-1))
+    return x
+
+def fft2c(img):
+    k = torch.fft.fftshift(torch.fft.fft2(torch.fft.ifftshift(img, (-2,-1)), norm='ortho'), (-2,-1))
+    return k
+
+# def ifft2c(k):
+#     x = np.fft.fftshift(np.fft.ifft2(np.fft.ifftshift(k, (-2,-1)), norm='ortho'), (-2,-1))
+#     return x
+
+# def fft2c(img):
+#     k = np.fft.fftshift(np.fft.fft2(np.fft.ifftshift(img, (-2,-1)), norm='ortho'), (-2,-1))
+#     return k
 
 def rss_coil_combine(image):
     squared_abs = np.abs(image)**2
@@ -22,14 +38,6 @@ def minmax_normalization(image):
     max_val = np.max(image)
     tmp = (image - min_val) / (max_val - min_val)
     return tmp
-
-def ifft2c(k):
-    x = np.fft.fftshift(np.fft.ifft2(np.fft.ifftshift(k, (-2,-1)), norm='ortho'), (-2,-1))
-    return x
-
-def fft2c(img):
-    k = np.fft.fftshift(np.fft.fft2(np.fft.ifftshift(img, (-2,-1)), norm='ortho'), (-2,-1))
-    return k
 
 def crop(img, crop_size=320):
     height, width = img.shape[-2:]
