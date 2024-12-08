@@ -6,10 +6,9 @@ import numpy as np
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import re
 import h5py
-from utils import rss_coil_combine
 
-APP_KEY = 'qi3onmgezlr00yv'
-REFRESH_TOKEN = 'b_N3-an_VvQAAAAAAAAAAc7kTAMBxeYC9GlsLpwgFrXX3kbZr2li3f3GfGx-iGnr'
+APP_KEY = 'wez2mo5zuap2e3d'
+REFRESH_TOKEN = 'SU8aoNQ5Q_EAAAAAAAAAAafx4W1j_Dg0duCClZAivpPW-D7aFQJXWyII3dgtgwRh'
 
 def dropbox_connect():
     dbx = dropbox.Dropbox(oauth2_refresh_token=REFRESH_TOKEN, app_key=APP_KEY)
@@ -33,7 +32,7 @@ def download_npy_file(dbx, dropbox_path, max_retries=3, delay=5):
                 print(f"Retrying in {delay} seconds...")
                 time.sleep(delay)
 
-def load_npy_from_dropbox(dbx, folder_path, max_workers=12, data_type = 'volume'):
+def load_npy_from_dropbox(dbx, folder_path, max_workers=12):
     data_dict = {}
 
     try:
@@ -44,19 +43,13 @@ def load_npy_from_dropbox(dbx, folder_path, max_workers=12, data_type = 'volume'
             for entry in folder_metadata.entries:
                 if isinstance(entry, dropbox.files.FileMetadata) and entry.name.endswith('.npy'):
                     file_path = os.path.join(folder_path, entry.name)
-                    numbers = re.findall(r'\d+', entry.name)
-                    if data_type == 'volume':
-                        subject_id = numbers[-1]
-                    else:
-                        subject_id = numbers[-3]
+                    subject_id = entry.name.replace('.npy', '')
                     future = executor.submit(download_npy_file, dbx, file_path)
                     futures[future] = subject_id
                     
             for future in as_completed(futures):
                 subject_id = futures[future]
                 npy = future.result()
-                if data_type == 'volume':
-                    npy = rss_coil_combine(npy)
                 data_dict[subject_id] = npy
 
     except Exception as e:
