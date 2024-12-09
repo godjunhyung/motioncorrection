@@ -101,10 +101,10 @@ def calculate_iqm(clear_dict, motion_dict, folder_name):
 
 def calculate_iqm_time(clear_dict, motion_dict):
     for key in clear_dict.keys():
-        motion_key = f"{key}_motion"  # `_motion`이 붙은 키로 변환
+        motion_key = f"{key}_motion"  
         if motion_key in motion_dict:
-            data_ref = clear_dict[key]
-            data_img = motion_dict[motion_key]
+            data_ref = rss_coil_combine(clear_dict[key])
+            data_img = rss_coil_combine(motion_dict[motion_key])
             crop_size = data_ref.shape[-1]
             data_ref = crop(data_ref, crop_size)
             data_img = crop(data_img, crop_size)
@@ -112,29 +112,24 @@ def calculate_iqm_time(clear_dict, motion_dict):
             for slice_idx in range(data_ref.shape[0]):
                 ref_minmax = minmax_normalization(data_ref[slice_idx])
                 img_minmax = minmax_normalization(data_img[slice_idx])
+                x = torch.from_numpy(ref_minmax).unsqueeze(0).unsqueeze(1)
+                y = torch.from_numpy(img_minmax).unsqueeze(0).unsqueeze(1)
 
-                # Haarpsi 계산 시간 측정
                 start_time = time.time()
                 Haarpsi, similarity_map, weight_map = haar_psi(ref_minmax * 255, img_minmax * 255)
                 haarpsi_time = time.time() - start_time
 
-                # VSI 계산 시간 측정
                 start_time = time.time()
-                x = torch.from_numpy(ref_minmax).unsqueeze(0).unsqueeze(1)
-                y = torch.from_numpy(img_minmax).unsqueeze(0).unsqueeze(1)
                 VSI = vsi(x, y)
                 vsi_time = time.time() - start_time
 
-                # VIF 계산 시간 측정
                 start_time = time.time()
                 vif = vif_p(x, y)
                 vif_time = time.time() - start_time
 
-                # NQM 계산 시간 측정
                 start_time = time.time()
                 NQM = nqm(ref_minmax, img_minmax)
                 nqm_time = time.time() - start_time
 
-                # 시간 출력
                 print(f"Slice {slice_idx}: HaarPSI: {haarpsi_time:.6f}s, VSI: {vsi_time:.6f}s, VIF: {vif_time:.6f}s, NQM: {nqm_time:.6f}s")
             return

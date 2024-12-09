@@ -5,6 +5,7 @@ pip install --upgrade pip
 
 # Install core libraries
 pip install dropbox numpy scipy pandas matplotlib tqdm ipywidgets h5py
+pip install seaborn
 
 # Install medical imaging libraries
 pip install SimpleITK nibabel

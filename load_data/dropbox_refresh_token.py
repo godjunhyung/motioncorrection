@@ -1,7 +1,7 @@
 # import dropbox
 # from dropbox import DropboxOAuth2FlowNoRedirect
 
-# APP_KEY = "qi3onmgezlr00yv"
+# APP_KEY = ""
 # auth_flow = DropboxOAuth2FlowNoRedirect(APP_KEY, use_pkce=True, token_access_type='offline')
 
 # authorize_url = auth_flow.start()
