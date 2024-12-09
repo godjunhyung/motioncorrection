@@ -70,8 +70,10 @@ def calculate_iqm(clear_dict, motion_dict, folder_name):
     for key in tqdm(clear_dict.keys(), desc="Processing keys"):
         motion_key = f"{key}_motion" 
         if motion_key in motion_dict:
-            data_ref = rss_coil_combine(clear_dict[key])
-            data_img = rss_coil_combine(motion_dict[motion_key])
+            # data_ref = rss_coil_combine(clear_dict[key])
+            # data_img = rss_coil_combine(motion_dict[motion_key])
+            data_ref = clear_dict[key]
+            data_img = motion_dict[motion_key]
             crop_size = data_ref.shape[-1]
             data_ref = crop(data_ref, crop_size)
             data_img = crop(data_img, crop_size)
@@ -103,8 +105,10 @@ def calculate_iqm_time(clear_dict, motion_dict):
     for key in clear_dict.keys():
         motion_key = f"{key}_motion"  
         if motion_key in motion_dict:
-            data_ref = rss_coil_combine(clear_dict[key])
-            data_img = rss_coil_combine(motion_dict[motion_key])
+            # data_ref = rss_coil_combine(clear_dict[key])
+            # data_img = rss_coil_combine(motion_dict[motion_key])
+            data_ref = clear_dict[key]
+            data_img = motion_dict[motion_key]
             crop_size = data_ref.shape[-1]
             data_ref = crop(data_ref, crop_size)
             data_img = crop(data_img, crop_size)
