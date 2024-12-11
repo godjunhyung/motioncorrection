@@ -5,12 +5,12 @@ import torch.nn.functional as F
 
 def conv3x3(in_planes, out_planes, stride=1, groups=1, dilation=1):
     """3x3 convolution with padding"""
-    return nn.Conv3d(in_planes, out_planes, kernel_size=3, stride=stride,
+    return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
                      padding=dilation, groups=groups, bias=False, dilation=dilation)
 
 def conv1x1(in_planes, out_planes, stride=1):
     """1x1 convolution"""
-    return nn.Conv3d(in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
+    return nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
 
 class BasicBlock(nn.Module):
     expansion = 1
@@ -19,7 +19,7 @@ class BasicBlock(nn.Module):
                  base_width=64, dilation=1, norm_layer=None):
         super(BasicBlock, self).__init__()
         if norm_layer is None:
-            norm_layer = nn.BatchNorm3d
+            norm_layer = nn.BatchNorm2d
         if groups != 1 or base_width != 64:
             raise ValueError('BasicBlock only supports groups=1 and base_width=64')
         if dilation > 1:
@@ -58,7 +58,7 @@ class Bottleneck(nn.Module):
                  base_width=64, dilation=1, norm_layer=None):
         super(Bottleneck, self).__init__()
         if norm_layer is None:
-            norm_layer = nn.BatchNorm3d
+            norm_layer = nn.BatchNorm2d
         width = int(planes * (base_width / 64.)) * groups
         # Both self.conv2 and self.downsample layers downsample the input when stride != 1
         self.conv1 = conv1x1(inplanes, width)
@@ -95,7 +95,7 @@ class Bottleneck(nn.Module):
 
 class ResNet(nn.Module):
     """
-    Standard 3D-ResNet architecture with big initial 7x7x7 kernel.
+    Standard 2D-ResNet architecture with big initial 7x7x7 kernel.
     It can be turned in mode "classifier", outputting a vector of size <n_classes> or
     "encoder", outputting a latent vector of size 512 (independent of input size).
     Note: only a last FC layer is added on top of the "encoder" backbone.
@@ -106,7 +106,7 @@ class ResNet(nn.Module):
         super(ResNet, self).__init__()
 
         if norm_layer is None:
-            norm_layer = nn.BatchNorm3d
+            norm_layer = nn.BatchNorm2d
         self._norm_layer = norm_layer
 
         self.name = "resnet"
@@ -125,10 +125,10 @@ class ResNet(nn.Module):
         self.base_width = width_per_group
         initial_stride = 2 if initial_kernel_size==7 else 1
         padding = (initial_kernel_size-initial_stride+1)//2
-        self.conv1 = nn.Conv3d(in_channels, self.inplanes, kernel_size=initial_kernel_size, stride=initial_stride, padding=padding, bias=False)
+        self.conv1 = nn.Conv2d(in_channels, self.inplanes, kernel_size=initial_kernel_size, stride=initial_stride, padding=padding, bias=False)
         self.bn1 = norm_layer(self.inplanes)
         self.relu = nn.ReLU(inplace=True)
-        self.maxpool = nn.MaxPool3d(kernel_size=3, stride=2, padding=1)
+        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
         channels = [64, 128, 256, 512]
 
@@ -136,12 +136,12 @@ class ResNet(nn.Module):
         self.layer2 = self._make_layer(block, channels[1], layers[1], stride=2, dilate=replace_stride_with_dilation[0])
         self.layer3 = self._make_layer(block, channels[2], layers[2], stride=2, dilate=replace_stride_with_dilation[1])
         self.layer4 = self._make_layer(block, channels[3], layers[3], stride=2, dilate=replace_stride_with_dilation[2])
-        self.avgpool = nn.AdaptiveAvgPool3d(1)
+        self.avgpool = nn.AdaptiveAvgPool2d(1)
 
         for m in self.modules():
-            if isinstance(m, nn.Conv3d):
+            if isinstance(m, nn.Conv2d):
                 nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
-            elif isinstance(m, (nn.BatchNorm3d, nn.GroupNorm)):
+            elif isinstance(m, (nn.BatchNorm2d, nn.GroupNorm)):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
             elif isinstance(m, nn.Linear):

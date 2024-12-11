@@ -8,7 +8,7 @@ class KernelizedSupCon(nn.Module):
     """Supervised contrastive loss: https://arxiv.org/pdf/2004.11362.pdf.
     It also supports the unsupervised contrastive loss in SimCLR
     Based on: https://github.com/HobbitLong/SupContrast"""
-    def __init__(self, method: str, temperature: float=0.07, contrast_mode: str='all',
+    def __init__(self, method: str='supcon', temperature: float=0.07, contrast_mode: str='all',
                  base_temperature: float=0.07, kernel: callable=None, delta_reduction: str='sum'):
         super().__init__()
         self.temperature = temperature
@@ -134,14 +134,14 @@ class KernelizedSupCon(nn.Module):
 
         log_prob = alignment - uniformity # log(alignment/uniformity) = log(alignment) - log(uniformity)
         log_prob = (positive_mask * log_prob).sum(1) / positive_mask.sum(1) # compute mean of log-likelihood over positive
- 
+        
         # loss
         loss = - (self.temperature / self.base_temperature) * log_prob
         return loss.mean()
 
 
 if __name__ == '__main__':
-    k_supcon = KernelizedSupCon(1.0)
+    k_supcon = KernelizedSupCon()
 
     x = torch.nn.functional.normalize(torch.randn((256, 2, 64)), dim=1)
     labels = torch.randint(0, 4, (256,))

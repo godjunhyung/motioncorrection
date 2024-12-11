@@ -5,7 +5,7 @@ import torch.utils.checkpoint as cp
 from collections import OrderedDict
 
 class DenseNet(nn.Module):
-    """3D-Densenet-BC model class, based on
+    """2D-Densenet-BC model class, based on
     `"Densely Connected Convolutional Networks" <https://arxiv.org/pdf/1608.06993.pdf>`_
     Args:
         growth_rate (int) - how many filters to add each layer (`k` in paper)
@@ -26,11 +26,11 @@ class DenseNet(nn.Module):
         super(DenseNet, self).__init__()
         # First convolution
         self.features = nn.Sequential(OrderedDict([
-            ('conv0', nn.Conv3d(in_channels, num_init_features,
+            ('conv0', nn.Conv2d(in_channels, num_init_features,
                                 kernel_size=7, stride=2, padding=3, bias=False)),
-            ('norm0', nn.BatchNorm3d(num_init_features)),
+            ('norm0', nn.BatchNorm2d(num_init_features)),
             ('relu0', nn.ReLU(inplace=True)),
-            ('pool0', nn.MaxPool3d(kernel_size=3, stride=2, padding=1)),
+            ('pool0', nn.MaxPool2d(kernel_size=3, stride=2, padding=1)),
         ]))
 
         # Each denseblock
@@ -56,9 +56,9 @@ class DenseNet(nn.Module):
 
         # Official init from torch repo.
         for m in self.modules():
-            if isinstance(m, nn.Conv3d):
+            if isinstance(m, nn.Conv2d):
                 nn.init.kaiming_normal_(m.weight)
-            elif isinstance(m, nn.BatchNorm3d):
+            elif isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
             elif isinstance(m, nn.Linear):
@@ -66,7 +66,7 @@ class DenseNet(nn.Module):
 
     def forward(self, x):
         features = self.features(x)
-        out = F.adaptive_avg_pool3d(features, 1)
+        out = F.adaptive_avg_pool2d(features, 1)
         out = torch.flatten(out, 1)
         return out.squeeze(dim=1)
        
@@ -83,14 +83,14 @@ def _bn_function_factory(norm, relu, conv):
 class _DenseLayer(nn.Sequential):
     def __init__(self, num_input_features, growth_rate, bn_size, memory_efficient=False):
         super(_DenseLayer, self).__init__()
-        self.add_module('norm1', nn.BatchNorm3d(num_input_features)),
+        self.add_module('norm1', nn.BatchNorm2d(num_input_features)),
         self.add_module('relu1', nn.ReLU(inplace=True)),
-        self.add_module('conv1', nn.Conv3d(num_input_features, bn_size *
+        self.add_module('conv1', nn.Conv2d(num_input_features, bn_size *
                                            growth_rate, kernel_size=1, stride=1,
                                            bias=False)),
-        self.add_module('norm2', nn.BatchNorm3d(bn_size * growth_rate)),
+        self.add_module('norm2', nn.BatchNorm2d(bn_size * growth_rate)),
         self.add_module('relu2', nn.ReLU(inplace=True)),
-        self.add_module('conv2', nn.Conv3d(bn_size * growth_rate, growth_rate,
+        self.add_module('conv2', nn.Conv2d(bn_size * growth_rate, growth_rate,
                                            kernel_size=3, stride=1, padding=1,
                                            bias=False)),
         self.memory_efficient = memory_efficient
@@ -130,11 +130,11 @@ class _DenseBlock(nn.Module):
 class _Transition(nn.Sequential):
     def __init__(self, num_input_features, num_output_features):
         super(_Transition, self).__init__()
-        self.add_module('norm', nn.BatchNorm3d(num_input_features))
+        self.add_module('norm', nn.BatchNorm2d(num_input_features))
         self.add_module('relu', nn.ReLU(inplace=True))
-        self.add_module('conv', nn.Conv3d(num_input_features, num_output_features,
+        self.add_module('conv', nn.Conv2d(num_input_features, num_output_features,
                                           kernel_size=1, stride=1, bias=False))
-        self.add_module('pool', nn.AvgPool3d(kernel_size=2, stride=2))
+        self.add_module('pool', nn.AvgPool2d(kernel_size=2, stride=2))
 
 
 def _densenet(arch, growth_rate, block_config, num_init_features, **kwargs):
