@@ -20,9 +20,8 @@ from torchvision import datasets
 from util import AverageMeter, NViewTransform, ensure_dir, set_seed, arg2bool, save_model
 from util import warmup_learning_rate, adjust_learning_rate
 from util import compute_age_mae, compute_site_ba
-# from data import FeatureExtractor, OpenBHB, bin_age
-# from data.transforms import Crop, Pad, Cutout
-# from main_mse import get_transforms
+from torch.utils.data import DataLoader
+from load_data.dataset import CustomDataset
 
 
 def parse_arguments():
@@ -212,7 +211,9 @@ def train(train_loader, model, infonce, optimizer, opts, epoch):
     for idx, (images, labels, _) in enumerate(train_loader):
         data_time.update(time.time() - t1)
 
-        # images = torch.cat(images, dim=0).to(opts.device)
+        images = [images, images]
+
+        images = torch.cat(images, dim=0).to(opts.device)
         bsz = labels.shape[0]
 
         warmup_learning_rate(opts, epoch, idx, len(train_loader), optimizer)
@@ -221,7 +222,7 @@ def train(train_loader, model, infonce, optimizer, opts, epoch):
             projected = model(images)
             projected = torch.split(projected, [bsz]*opts.n_views, dim=0)
             projected = torch.cat([f.unsqueeze(1) for f in projected], dim=1)
-            print(projected.shape, labels.shape)
+            # print(projected.shape, labels.shape)
             running_loss = infonce(projected, labels.to(opts.device))
         
         optimizer.zero_grad()
@@ -253,27 +254,19 @@ def train(train_loader, model, infonce, optimizer, opts, epoch):
 
 if __name__ == '__main__':
     opts = parse_arguments()
-    opts.device = 'cpu'
     opts.method = 'yaware'
     opts.kernel = 'gaussian'
-    opts.n_views = 1
     set_seed(opts.trial)
 
     # train_loader, train_loader_score, test_loader_int, test_loader_ext = load_data(opts)
+    
+    csv_path = "/root/motioncorrection/iqm_csv/fr-iqm.csv"
+    iqm_label = "VIF"
+    train_dataset = CustomDataset(csv_path, iqm_label)
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=24, shuffle=True)
+
     model, infonce = load_model(opts)
     optimizer = load_optimizer(model, opts)
-
-    x = torch.randn(1, 1, 396, 396)
-    print(x.shape)
-    print(model(x).shape)
-
-    from torch.utils.data import TensorDataset, DataLoader
-
-    x = torch.randn(10, 1, 396, 396)
-    y1 = torch.randn(10)
-    y2 = torch.randn(10)
-    train_dataset= TensorDataset(x, y1, y2)
-    train_loader = DataLoader(train_dataset, batch_size=3, shuffle=False)
 
     model_name = opts.model
     if opts.warm:
@@ -343,7 +336,7 @@ if __name__ == '__main__':
         writer.add_scalar("BT", batch_time, epoch)
         writer.add_scalar("DT", data_time, epoch)
         print(f"epoch {epoch}, total time {t2-start_time:.2f}, epoch time {t2-t1:.3f} loss {loss_train:.4f}")
-        break
+        
     #     if epoch % opts.save_freq == 0:
     #         # save_file = os.path.join(save_dir, f"ckpt_epoch_{epoch}.pth")
     #         # save_model(model, optimizer, opts, epoch, save_file)

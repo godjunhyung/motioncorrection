@@ -12,9 +12,11 @@ pip install SimpleITK nibabel
 
 # Install PyTorch (specific version may vary based on your system)
 pip install torch torchvision torchaudio
+pip install argparse wandb tensorboard
 
-# Install scikit-image
+# Install scikit
 pip install scikit-image
+pip install scikit-learn
 
 # Install image quality assessment library (piq)
 pip install piq
