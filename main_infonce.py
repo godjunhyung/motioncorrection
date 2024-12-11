@@ -300,7 +300,7 @@ if __name__ == '__main__':
                 f"f{opts.alpha}_"
                 f"trial{opts.trial}")
     tb_dir = os.path.join(opts.save_dir, "tensorboard", run_name)
-    save_dir = os.path.join(opts.save_dir, f"openbhb_models", run_name)
+    save_dir = os.path.join(opts.save_dir, f"models", run_name)
     ensure_dir(tb_dir)
     ensure_dir(save_dir)
 
