@@ -6,6 +6,9 @@ pip install --upgrade pip
 # Install core libraries
 pip install dropbox numpy scipy pandas matplotlib tqdm ipywidgets h5py
 pip install seaborn
+pip install wandb
+pip install einops
+pip install timm
 
 # Install medical imaging libraries
 pip install SimpleITK nibabel
@@ -30,5 +33,3 @@ pip install tensorflow
 pip install google-api-python-client
 pip install oauth2client
 pip install httplib2
-
-

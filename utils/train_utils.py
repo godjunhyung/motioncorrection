@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 import itertools
-from util import tensor2np
+from utils.util import tensor2np
 from scipy.spatial.distance import cdist
 import matplotlib.pyplot as plt
 
@@ -32,10 +32,10 @@ class Maxlloyd:
                 prev_r = new_r
                 prev_t = new_t
 
-        self.compute_q_error(np.round_(self.init_r, 5), np.round_(new_r, 5))
-        self.get_memeber_num(np.round_(new_r, 2), self.scores)
+        self.compute_q_error(np.round(self.init_r, 5), np.round(new_r, 5))
+        self.get_memeber_num(np.round(new_r, 2), self.scores)
 
-        return np.round_(new_r, 2)
+        return np.round(new_r, 2)
     def compute_q_error(self, init_r, new_r):
         argmin_init_r = cdist(self.scores.reshape(-1, 1), init_r.reshape(-1, 1)).argmin(1)
         argmin_new_r = cdist(self.scores.reshape(-1, 1), new_r.reshape(-1, 1)).argmin(1)
@@ -62,7 +62,7 @@ class Maxlloyd:
             selected_idxs = np.where((self.scores >= t[idx]) & (self.scores < t[idx + 1]))[0]
             if len(selected_idxs) > 0:
                 mean = self.scores[selected_idxs].mean()
-                #new_r.append(np.round_(mean, 2))
+                #new_r.append(np.round(mean, 2))
                 new_r.append(mean)
             else:
                 new_r.append(-1)
@@ -83,7 +83,7 @@ class Maxlloyd:
                 next = valid_idxs_argsort[np.where(valid_idxs_argsort > invalid_idx)[0][0]]
 
                 temp_score = (new_r[prev] + new_r[next]) / 2
-                #new_r[invalid_idx] = np.round_(temp_score, 2)
+                #new_r[invalid_idx] = np.round(temp_score, 2)
                 new_r[invalid_idx] = temp_score
 
         assert f'Monotonic {strictly_monotonic(new_r)}'

@@ -10,7 +10,7 @@ class ConfigV1:
         self.bin = 50
         self.dataset_root = 'data/'
         self.datasplit_root = 'datasplit/'
-        self.label_df_root = '/root/fr-iqm_20250215.csv'
+        self.label_df_root = 'iqm_csv/fr-iqm_20250215.csv'
         # self.training_scheme = 'random_split'
         self.split = 1
 

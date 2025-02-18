@@ -148,7 +148,7 @@ def train(cfg, net, optimizer, data_loader, epoch):
         for dl_iter in range(cfg.batch_size):
             sample = next(dataloader_iterator)
 
-            scores_tmp = torch.cat([sample[f'img_{im_idx}_mos'] for im_idx in range(cfg.im_num)])
+            scores_tmp = torch.cat([sample[f'img_{im_idx}_fr_iqm'] for im_idx in range(cfg.im_num)])
             scores_tmp = scores_tmp.cuda().float()
             scores.append(scores_tmp)
 
@@ -235,7 +235,7 @@ def train(cfg, net, optimizer, data_loader, epoch):
 
 def evaluation(cfg, net, ref_data_loader, data_loader):
     net.eval()
-    test_mos_gt = data_loader.dataset.df_test['MOS'].values
+    test_fr_iqm_gt = data_loader.dataset.df_test[cfg.label_type].values
 
     preds_list = []
     with torch.no_grad():
@@ -271,11 +271,11 @@ def evaluation(cfg, net, ref_data_loader, data_loader):
 
             test_f = torch.cat(test_f_list)
             test_f = test_f.squeeze()
-            test_f = rearrange(test_f, '(N Cr) C -> N Cr C', N=len(test_mos_gt), C=cfg.reduced_dim).mean(1)
+            test_f = rearrange(test_f, '(N Cr) C -> N Cr C', N=len(test_fr_iqm_gt), C=cfg.reduced_dim).mean(1)
             test_f = test_f.transpose(1, 0)
 
             # Set # of iterations
-            n_iter = int(math.ceil(len(test_mos_gt) / cfg.test_batch_size))
+            n_iter = int(math.ceil(len(test_fr_iqm_gt) / cfg.test_batch_size))
             crop_num = 1
             start = 0
 
@@ -283,7 +283,7 @@ def evaluation(cfg, net, ref_data_loader, data_loader):
                 if idx % 1 == 0:
                     sys.stdout.write(f'\rTesting... [{idx + 1}/{n_iter}]')
 
-                batch = min(cfg.test_batch_size, len(test_mos_gt) - len(preds_list))
+                batch = min(cfg.test_batch_size, len(test_fr_iqm_gt) - len(preds_list))
 
                 f = torch.cat([aux_f.unsqueeze(0).repeat(batch, 1, 1),
                                rearrange(test_f[:, start:start + (batch * crop_num)], 'C (N L) -> N C L', N=batch, L=crop_num)], dim=-1)
@@ -294,7 +294,7 @@ def evaluation(cfg, net, ref_data_loader, data_loader):
                 # Estimate quality scores
                 preds = compute_score_v1(embs=rearrange(f, 'b c l -> b l c')[:, -1:],
                                          spv=rearrange(score_pivots, 'b c l -> b l c'),
-                                         emb_scores=torch.tensor(test_mos_gt[start:(start + batch)].reshape(-1, 1)).cuda().float(),
+                                         emb_scores=torch.tensor(test_fr_iqm_gt[start:(start + batch)].reshape(-1, 1)).cuda().float(),
                                          spv_scores=cfg.score_pivot_score,
                                          )
 
@@ -303,9 +303,9 @@ def evaluation(cfg, net, ref_data_loader, data_loader):
 
     preds_np = np.array(preds_list)
 
-    srcc = spearmanr(preds_np, test_mos_gt)[0]
-    pcc = pearsonr(preds_np, test_mos_gt)[0]
-    mae = np.abs(preds_np - test_mos_gt).mean()
+    srcc = spearmanr(preds_np, test_fr_iqm_gt)[0]
+    pcc = pearsonr(preds_np, test_fr_iqm_gt)[0]
+    mae = np.abs(preds_np - test_fr_iqm_gt).mean()
 
     write_log(cfg.log_file, f'\nTest MAE: {mae: .4f} SRCC: {srcc: .4f} PCC: {pcc: .4f}')
 

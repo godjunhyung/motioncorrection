@@ -29,7 +29,7 @@ class Train(Dataset):
             slice_idx = self.df['Slice Index'].iloc[self.idx[im_num][idx]]
 
             if motion_level == 0:
-                img_name = self.image_dir + f'{sequence}_clear/{subject_id}_motion.npy'
+                img_name = self.image_dir + f'{sequence}_clear/{subject_id}.npy'
             else:
                 img_name = self.image_dir + f'{sequence}_g{motion_level}/{subject_id}_motion.npy'
             img_fr_iqm = self.df[self.label_type].iloc[self.idx[im_num][idx]]
@@ -65,7 +65,7 @@ class Test(Dataset):
         slice_idx = self.df_test['Slice Index'].iloc[idx]
 
         if motion_level == 0:
-            img_name = self.image_dir + f'{sequence}_clear/{subject_id}_motion.npy'
+            img_name = self.image_dir + f'{sequence}_clear/{subject_id}.npy'
         else:
             img_name = self.image_dir + f'{sequence}_g{motion_level}/{subject_id}_motion.npy'
         img_fr_iqm = self.df_test[self.label_type].iloc[idx]
@@ -100,7 +100,7 @@ class Ref(Dataset):
         slice_idx = self.df_base['Slice Index'].iloc[self.idx_0[idx]]
 
         if motion_level == 0:
-            img_name = self.image_dir + f'{sequence}_clear/{subject_id}_motion.npy'
+            img_name = self.image_dir + f'{sequence}_clear/{subject_id}.npy'
         else:
             img_name = self.image_dir + f'{sequence}_g{motion_level}/{subject_id}_motion.npy'
         img_fr_iqm = self.df_base[self.label_type].iloc[self.idx_0[idx]]
