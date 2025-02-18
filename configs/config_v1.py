@@ -5,7 +5,7 @@ class ConfigV1:
     def __init__(self):
         # dataset
         self.dataset_name = 'Simulation' # 'Simulation', 'Severance'
-        self.mix_sequence = False 
+        self.mix_sequence = True 
         self.label_type = 'LPIPS' # 'HaarPSI', 'VSI', 'VIF', 'NQM', 'LPIPS'
         self.bin = 50
         self.dataset_root = 'data/'

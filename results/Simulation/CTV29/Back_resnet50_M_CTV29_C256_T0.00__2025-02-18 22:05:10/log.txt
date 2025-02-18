@@ -50,3 +50,19 @@ reference_point_num: 101
 -------------- End ----------------
 [*] 51 scores exist.
 [*] 101 reference points.
+
+Test MAE:  12.8136 SRCC: -0.0855 PCC: -0.0463
+
+Epoch: 1 MAE Loss: 9.888, Center Loss: 0.359, Order Loss: 1.478, Metric Loss: 4.887
+
+
+Test MAE:  12.6103 SRCC: -0.0325 PCC:  0.2482
+
+Epoch: 2 MAE Loss: 5.953, Center Loss: 0.388, Order Loss: 1.461, Metric Loss: 2.791
+
+
+Epoch: 3 MAE Loss: 3.968, Center Loss: 0.371, Order Loss: 1.411, Metric Loss: 1.644
+
+
+Epoch: 4 MAE Loss: 3.198, Center Loss: 0.351, Order Loss: 1.331, Metric Loss: 1.248
+
