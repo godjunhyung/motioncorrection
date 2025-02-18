@@ -11,7 +11,7 @@ from vsi import vsi
 from vif import vif_p
 from nqm import nqm
 
-from utils import *
+from mri_processing import *
 
 def save_visualization(output_dir, key, slice_idx, ref_minmax, img_minmax, similarity_map, weight_map):
     """
