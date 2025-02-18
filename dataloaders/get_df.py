@@ -79,8 +79,8 @@ def get_df_v1(cfg, is_train=False):
         raise ValueError(f'Undefined database ({cfg.dataset_name}) has been given')
 
     if is_train:
-        return train_image_path, bin_iqm(pd.read_csv(train_df_path), cfg.bin)
+        return train_image_path, pd.read_csv(train_df_path)
     elif is_train is False:
-        return ref_image_path, bin_iqm(pd.read_csv(ref_df_path), cfg.bin), test_image_path, bin_iqm(pd.read_csv(test_df_path), cfg.bin)
+        return ref_image_path, pd.read_csv(ref_df_path), test_image_path, pd.read_csv(test_df_path)
     else:
         raise ValueError(f'Undefined mode ({is_train}) has been given')

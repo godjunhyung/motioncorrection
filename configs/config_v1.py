@@ -14,6 +14,13 @@ class ConfigV1:
         # self.training_scheme = 'random_split'
         self.split = 1
 
+        self.all_sequences = ['t1', 't1post', 't2', 'flair']
+        self.exclude = False
+        if self.exclude:
+            self.exclude_sequence = 'flair'
+            self.included_sequences = [seq for seq in self.all_sequences 
+                                    if seq != self.exclude_sequence]
+
         # network
         self.backbone = 'resnet50'
         self.model_name = 'CTV29'
