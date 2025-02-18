@@ -1,0 +1,52 @@
+------------ Options -------------
+dataset_name: Simulation
+mix_sequence: False
+label_type: LPIPS
+bin: 50
+dataset_root: data/
+datasplit_root: datasplit/
+label_df_root: iqm_csv/fr-iqm_20250215.csv
+split: 1
+backbone: resnet50
+model_name: CTV29
+spv_num: 101
+exp_name: 
+image_size: 384
+reduced_dim: 256
+dec_layers: [1, 1, 1]
+batch_size: 18
+test_batch_size: 10
+num_list: 9
+start_iter: 0
+start_eval: 60
+eval_freq: 5
+im_list_len: 150
+im_num: 2
+tau: 0
+margin: 0.1
+optim: AdamW
+scheduler: cosinewarmup
+lr: 5e-05
+weight_decay: 0.0005
+epoch: 100
+test_first: True
+num_workers: 0
+gpu: 0
+wandb: False
+save_folder_parent: ./results/
+save_folder: ./results//Simulation/CTV29/Back_resnet50_M_CTV29_C256_T0.00__2025-02-18 21:52:22
+load: False
+n_scores: 51
+score_pivot_score: [  0.    0.    0.5   1.    1.5   2.    2.5   3.    3.5   4.    4.5   5.
+   5.5   6.    6.5   7.    7.5   8.    8.5   9.    9.5  10.   10.5  11.
+  11.5  12.   12.5  13.   13.5  14.   14.5  15.   15.5  16.   16.5  17.
+  17.5  18.   18.5  19.   19.5  20.   20.5  21.   21.5  22.   22.5  23.
+  23.5  24.   24.5  25.   26.   26.5  27.   27.5  28.   28.5  29.   29.5
+  30.   30.5  31.   31.5  32.   32.5  33.   33.5  34.   34.5  35.   35.5
+  36.   36.5  37.   37.5  38.   38.5  39.   39.5  40.   40.5  41.   41.5
+  42.   42.5  43.   43.5  44.   44.5  45.   45.5  46.   46.5  47.   47.5
+  48.   48.5  49.   50.  100. ]
+reference_point_num: 101
+-------------- End ----------------
+[*] 51 scores exist.
+[*] 101 reference points.

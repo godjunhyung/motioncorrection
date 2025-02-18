@@ -57,7 +57,7 @@ class ConfigV1:
 
         # misc
         self.num_workers = 0
-        self.gpu = '1'
+        self.gpu = '0'
         self.wandb = False
 
         # logging

@@ -159,6 +159,9 @@ def train(cfg, net, optimizer, data_loader, epoch):
             # Extract features
             for im_idx in range(cfg.im_num):
                 img = sample[f'img_{im_idx}'].cuda()
+                img = img.unsqueeze(1)
+                if img.shape[1] == 1:
+                    img = img.repeat(1, 3, 1, 1)
                 img_f = net('extraction', {'img': img}).squeeze()
                 f.append(img_f)
 
@@ -246,8 +249,13 @@ def evaluation(cfg, net, ref_data_loader, data_loader):
             for idx, sample in enumerate(ref_data_loader):
                 if idx % 1 == 0:
                     sys.stdout.write(f'\rExtract Aux Img Features... [{idx + 1}/{len(ref_data_loader)}]')
-
+                
                 image = sample[f'img'].cuda()
+                image = image.unsqueeze(1)
+
+                if image.shape[1] == 1:
+                    image = image.repeat(1, 3, 1, 1)
+
                 f = net('extraction', {'img': image})
                 f_list.append(f)
 
@@ -263,6 +271,11 @@ def evaluation(cfg, net, ref_data_loader, data_loader):
                     sys.stdout.write(f'\rExtract Test Img Features... [{idx + 1}/{len(data_loader)}]')
 
                 image = sample[f'img'].cuda()
+                image = image.unsqueeze(1)
+
+                if image.shape[1] == 1:
+                    image = image.repeat(1, 3, 1, 1)
+
                 f = net('extraction', {'img': image})
                 f_hflip = net('extraction', {'img': torchvision.transforms.functional.hflip(image)})
 
