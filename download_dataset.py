@@ -2,14 +2,7 @@ import os
 import numpy as np
 from tqdm import tqdm
 from load_data.load_from_dropbox import dropbox_connect, load_npy_from_dropbox
-
-def save_data(data_dict, folder_name):
-    root_dir = os.path.join(os.getcwd(), 'data')
-    output_dir = os.path.join(root_dir, folder_name)
-    os.makedirs(output_dir, exist_ok=True) 
-    for key, volume in tqdm(data_dict.items(), desc="Save volumes"):
-        file_path = os.path.join(output_dir, f"{key}.npy")
-        np.save(file_path, volume)
+from load_data.data_io import save_data
 
 dbx = dropbox_connect()
 t1post_clear = load_npy_from_dropbox(dbx, '/simulation_data/t1post_clear')
